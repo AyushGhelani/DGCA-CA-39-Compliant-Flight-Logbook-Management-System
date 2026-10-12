@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<StackPane xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+           fx:controller="com.dgca.flightlogbook.ui.controller.LoginController"
+           prefWidth="500" prefHeight="650" style="-fx-background-color: #f0f4f8;">
+    <VBox alignment="CENTER" maxWidth="420" spacing="15" styleClass="card-pane">
+        <padding>
+            <Insets top="30" right="30" bottom="30" left="30"/>
+        </padding>
+
+        <Label text="DGCA Flight Logbook" styleClass="header-title"/>
+        <Label text="Aviation Flight Training &amp; CA-39 Logbook" style="-fx-text-fill: #718096;"/>
+
+        <Separator prefWidth="350"/>
+
+        <VBox spacing="5" alignment="CENTER_LEFT">
+            <Label text="Username" style="-fx-font-weight: bold;"/>
+            <TextField fx:id="usernameField" promptText="Enter username"/>
+        </VBox>
+
+        <VBox spacing="5" alignment="CENTER_LEFT">
+            <Label text="Password" style="-fx-font-weight: bold;"/>
+            <PasswordField fx:id="passwordField" promptText="Enter password"/>
+        </VBox>
+
+        <!-- Register Toggle -->
+        <HBox alignment="CENTER_LEFT">
+            <CheckBox fx:id="registerToggle" text="Register a new account" onAction="#handleToggleRegister"/>
+        </HBox>
+
+        <!-- Extra fields for registration (visible only when registerToggle is selected) -->
+        <VBox fx:id="registerBox" spacing="10" visible="false" managed="false">
+            <VBox spacing="5" alignment="CENTER_LEFT">
+                <Label text="Full Name" style="-fx-font-weight: bold;"/>
+                <TextField fx:id="fullNameField" promptText="e.g. Capt. Raj Kumar"/>
+            </VBox>
+
+            <VBox spacing="5" alignment="CENTER_LEFT">
+                <Label text="Email" style="-fx-font-weight: bold;"/>
+                <TextField fx:id="emailField" promptText="e.g. pilot@example.com"/>
+            </VBox>
+
+            <VBox spacing="5" alignment="CENTER_LEFT">
+                <Label text="License Number" style="-fx-font-weight: bold;"/>
+                <TextField fx:id="licenseNumberField" promptText="e.g. CPL-2024-001 (optional for admin)"/>
+            </VBox>
+
+            <VBox spacing="5" alignment="CENTER_LEFT">
+                <Label text="Role" style="-fx-font-weight: bold;"/>
+                <ComboBox fx:id="roleComboBox" maxWidth="Infinity"/>
+            </VBox>
+        </VBox>
+
+        <!-- Error / Status Message -->
+        <Label fx:id="errorLabel" styleClass="error-label" wrapText="true" visible="false"/>
+
+        <!-- Action Button -->
+        <Button fx:id="actionButton" text="Log In" maxWidth="Infinity" onAction="#handleSubmit" style="-fx-font-size: 14px;"/>
+
+        <ProgressIndicator fx:id="loadingIndicator" visible="false" managed="false" maxHeight="30" maxWidth="30"/>
+    </VBox>
+</StackPane>

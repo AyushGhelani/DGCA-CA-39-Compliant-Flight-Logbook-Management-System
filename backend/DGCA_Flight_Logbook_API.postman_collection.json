@@ -1,0 +1,379 @@
+{
+  "info": {
+    "name": "DGCA Flight Logbook API",
+    "description": "Complete API collection for testing the DGCA CA-39 Compliant Aviation Flight Training & Logbook Management System",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:8080" },
+    { "key": "jwtToken", "value": "" },
+    { "key": "studentId", "value": "" },
+    { "key": "instructorId", "value": "" },
+    { "key": "adminId", "value": "" },
+    { "key": "aircraftId", "value": "" },
+    { "key": "flightLogId", "value": "" }
+  ],
+  "item": [
+    {
+      "name": "1. Authentication",
+      "item": [
+        {
+          "name": "1.1 Register Student",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"student_raj\",\n  \"password\": \"Pilot@123\",\n  \"fullName\": \"Raj Kumar\",\n  \"email\": \"raj@aviation.in\",\n  \"licenseNumber\": \"SPL-2024-001\",\n  \"role\": \"STUDENT\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/api/auth/register", "host": ["{{baseUrl}}"], "path": ["api", "auth", "register"] }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "pm.collectionVariables.set('studentId', jsonData.userId);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "1.2 Register CFI (Instructor)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"cfi_sharma\",\n  \"password\": \"Instructor@123\",\n  \"fullName\": \"Capt. Anil Sharma\",\n  \"email\": \"sharma@aviation.in\",\n  \"licenseNumber\": \"ATPL-2020-042\",\n  \"role\": \"CFI\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/api/auth/register", "host": ["{{baseUrl}}"], "path": ["api", "auth", "register"] }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "pm.collectionVariables.set('instructorId', jsonData.userId);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "1.3 Register Admin",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"admin_dgca\",\n  \"password\": \"Admin@123\",\n  \"fullName\": \"DGCA Admin\",\n  \"email\": \"admin@dgca.gov.in\",\n  \"role\": \"ADMIN\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/api/auth/register", "host": ["{{baseUrl}}"], "path": ["api", "auth", "register"] }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "pm.collectionVariables.set('adminId', jsonData.userId);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "1.4 Login as Student",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"student_raj\",\n  \"password\": \"Pilot@123\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/api/auth/login", "host": ["{{baseUrl}}"], "path": ["api", "auth", "login"] }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "pm.collectionVariables.set('jwtToken', jsonData.token);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "1.5 Login as CFI",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"cfi_sharma\",\n  \"password\": \"Instructor@123\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/api/auth/login", "host": ["{{baseUrl}}"], "path": ["api", "auth", "login"] }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "pm.collectionVariables.set('jwtToken', jsonData.token);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "1.6 Login as Admin",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"admin_dgca\",\n  \"password\": \"Admin@123\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/api/auth/login", "host": ["{{baseUrl}}"], "path": ["api", "auth", "login"] }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "pm.collectionVariables.set('jwtToken', jsonData.token);"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "2. Aircraft Management",
+      "item": [
+        {
+          "name": "2.1 Add Aircraft (Admin token required)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{jwtToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"registrationTail\": \"VT-ABC\",\n  \"typeDesignator\": \"C172\",\n  \"engineType\": \"SINGLE\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/api/aircraft", "host": ["{{baseUrl}}"], "path": ["api", "aircraft"] }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "pm.collectionVariables.set('aircraftId', jsonData.id);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "2.2 Add Aircraft - A320",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{jwtToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"registrationTail\": \"VT-XYZ\",\n  \"typeDesignator\": \"A320\",\n  \"engineType\": \"MULTI\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/api/aircraft", "host": ["{{baseUrl}}"], "path": ["api", "aircraft"] }
+          }
+        },
+        {
+          "name": "2.3 List All Aircraft",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/api/aircraft", "host": ["{{baseUrl}}"], "path": ["api", "aircraft"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "3. Flight Log Management",
+      "item": [
+        {
+          "name": "3.1 Create Flight Log (Student token)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{jwtToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"dateUtc\": \"2024-10-10\",\n  \"departureAerodrome\": \"VOBL\",\n  \"arrivalAerodrome\": \"VABB\",\n  \"blockOffUtc\": \"06:00\",\n  \"blockOnUtc\": \"08:30\",\n  \"aircraftId\": {{aircraftId}},\n  \"studentId\": {{studentId}},\n  \"instructorId\": {{instructorId}},\n  \"picTime\": 0,\n  \"sicTime\": 0,\n  \"dualTime\": 150,\n  \"dayTime\": 150,\n  \"nightTime\": 0,\n  \"instrumentTime\": 30,\n  \"remarks\": \"Cross country training VOBL-VABB\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/api/logs", "host": ["{{baseUrl}}"], "path": ["api", "logs"] }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "pm.collectionVariables.set('flightLogId', jsonData.id);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "3.2 Create Flight Log - INVALID Split (Should Fail)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{jwtToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"dateUtc\": \"2024-10-11\",\n  \"departureAerodrome\": \"VOBL\",\n  \"arrivalAerodrome\": \"VOHS\",\n  \"blockOffUtc\": \"10:00\",\n  \"blockOnUtc\": \"11:30\",\n  \"aircraftId\": {{aircraftId}},\n  \"studentId\": {{studentId}},\n  \"instructorId\": {{instructorId}},\n  \"picTime\": 60,\n  \"sicTime\": 0,\n  \"dualTime\": 0,\n  \"dayTime\": 90,\n  \"nightTime\": 0,\n  \"instrumentTime\": 0,\n  \"remarks\": \"This should fail - capacity split mismatch\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/api/logs", "host": ["{{baseUrl}}"], "path": ["api", "logs"] }
+          }
+        },
+        {
+          "name": "3.3 Get Student Logs",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{jwtToken}}" }],
+            "url": { "raw": "{{baseUrl}}/api/logs/student/{{studentId}}", "host": ["{{baseUrl}}"], "path": ["api", "logs", "student", "{{studentId}}"] }
+          }
+        },
+        {
+          "name": "3.4 Get Student Logs - With Date Filter",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{jwtToken}}" }],
+            "url": {
+              "raw": "{{baseUrl}}/api/logs/student/{{studentId}}?fromDate=2024-10-01&toDate=2024-10-31&status=PENDING",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "logs", "student", "{{studentId}}"],
+              "query": [
+                { "key": "fromDate", "value": "2024-10-01" },
+                { "key": "toDate", "value": "2024-10-31" },
+                { "key": "status", "value": "PENDING" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "3.5 Update Flight Log (Only PENDING)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{jwtToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"dateUtc\": \"2024-10-10\",\n  \"departureAerodrome\": \"VOBL\",\n  \"arrivalAerodrome\": \"VABB\",\n  \"blockOffUtc\": \"06:00\",\n  \"blockOnUtc\": \"08:30\",\n  \"aircraftId\": {{aircraftId}},\n  \"studentId\": {{studentId}},\n  \"instructorId\": {{instructorId}},\n  \"picTime\": 0,\n  \"sicTime\": 0,\n  \"dualTime\": 150,\n  \"dayTime\": 120,\n  \"nightTime\": 30,\n  \"instrumentTime\": 45,\n  \"remarks\": \"Updated: Cross country with 30 min night flying\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/api/logs/{{flightLogId}}", "host": ["{{baseUrl}}"], "path": ["api", "logs", "{{flightLogId}}"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "4. Certification Workflow",
+      "item": [
+        {
+          "name": "4.1 Get Pending Logs for CFI (CFI token required)",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{jwtToken}}" }],
+            "url": {
+              "raw": "{{baseUrl}}/api/certification/pending?instructorId={{instructorId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "certification", "pending"],
+              "query": [{ "key": "instructorId", "value": "{{instructorId}}" }]
+            }
+          }
+        },
+        {
+          "name": "4.2 Certify Flight Log (CFI token)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Authorization", "value": "Bearer {{jwtToken}}" }],
+            "url": {
+              "raw": "{{baseUrl}}/api/certification/{{flightLogId}}/certify?instructorId={{instructorId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "certification", "{{flightLogId}}", "certify"],
+              "query": [{ "key": "instructorId", "value": "{{instructorId}}" }]
+            }
+          }
+        },
+        {
+          "name": "4.3 Reject Flight Log (CFI token)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{jwtToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"reason\": \"Block times do not match actual ATC log\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/certification/{{flightLogId}}/reject?instructorId={{instructorId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "certification", "{{flightLogId}}", "reject"],
+              "query": [{ "key": "instructorId", "value": "{{instructorId}}" }]
+            }
+          }
+        },
+        {
+          "name": "4.4 Try Update CERTIFIED Log (Should Fail 409)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{jwtToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"dateUtc\": \"2024-10-10\",\n  \"departureAerodrome\": \"VOBL\",\n  \"arrivalAerodrome\": \"VABB\",\n  \"blockOffUtc\": \"06:00\",\n  \"blockOnUtc\": \"08:30\",\n  \"aircraftId\": {{aircraftId}},\n  \"studentId\": {{studentId}},\n  \"instructorId\": {{instructorId}},\n  \"picTime\": 150,\n  \"sicTime\": 0,\n  \"dualTime\": 0,\n  \"dayTime\": 150,\n  \"nightTime\": 0,\n  \"instrumentTime\": 0,\n  \"remarks\": \"This should fail - record is locked\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/api/logs/{{flightLogId}}", "host": ["{{baseUrl}}"], "path": ["api", "logs", "{{flightLogId}}"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "5. Reports",
+      "item": [
+        {
+          "name": "5.1 CA-39 Summary Report",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{jwtToken}}" }],
+            "url": { "raw": "{{baseUrl}}/api/reports/ca39-summary/{{studentId}}", "host": ["{{baseUrl}}"], "path": ["api", "reports", "ca39-summary", "{{studentId}}"] }
+          }
+        }
+      ]
+    }
+  ]
+}

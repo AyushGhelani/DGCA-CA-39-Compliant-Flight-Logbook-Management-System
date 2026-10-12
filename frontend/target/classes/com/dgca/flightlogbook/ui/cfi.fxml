@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.dgca.flightlogbook.ui.controller.CfiController"
+      prefWidth="1050" prefHeight="700" spacing="10">
+
+    <!-- Top Navigation Bar -->
+    <HBox alignment="CENTER_LEFT" spacing="15" styleClass="top-bar">
+        <Label text="DGCA Flight Logbook" styleClass="top-bar-title"/>
+        <Label text="CFI Certification Portal" style="-fx-text-fill: #90cdf4; -fx-font-weight: bold;"/>
+        <Region HBox.hgrow="ALWAYS"/>
+        <Label fx:id="instructorNameLabel" text="Capt. Instructor" styleClass="top-bar-user"/>
+        <Button text="Logout" styleClass="btn-logout" onAction="#handleLogout"/>
+    </HBox>
+
+    <VBox spacing="15" VBox.vgrow="ALWAYS">
+        <padding>
+            <Insets top="15" right="20" bottom="15" left="20"/>
+        </padding>
+
+        <HBox spacing="12" alignment="CENTER_LEFT">
+            <Label text="Pending Flight Logs Awaiting Certification" styleClass="header-title"/>
+            <Region HBox.hgrow="ALWAYS"/>
+            <Button text="Refresh Queue" onAction="#loadPendingLogs" styleClass="btn-secondary"/>
+            <Button fx:id="certifyButton" text="Certify Selected" onAction="#handleCertify"
+                    styleClass="btn-success" disable="true"/>
+            <Button fx:id="rejectButton" text="Reject Selected" onAction="#handleReject"
+                    styleClass="btn-danger" disable="true"/>
+        </HBox>
+
+        <TableView fx:id="pendingTable" VBox.vgrow="ALWAYS">
+            <columns>
+                <TableColumn fx:id="colId" text="ID" prefWidth="55"/>
+                <TableColumn fx:id="colDate" text="Date (UTC)" prefWidth="95"/>
+                <TableColumn fx:id="colStudent" text="Student Pilot" prefWidth="150"/>
+                <TableColumn fx:id="colRoute" text="Route" prefWidth="120"/>
+                <TableColumn fx:id="colAircraft" text="Aircraft" prefWidth="130"/>
+                <TableColumn fx:id="colTotalTime" text="Total (min)" prefWidth="85"/>
+                <TableColumn fx:id="colPicTime" text="PIC" prefWidth="60"/>
+                <TableColumn fx:id="colDualTime" text="Dual" prefWidth="60"/>
+                <TableColumn fx:id="colDayTime" text="Day" prefWidth="60"/>
+                <TableColumn fx:id="colNightTime" text="Night" prefWidth="60"/>
+                <TableColumn fx:id="colInstrumentTime" text="Instrument" prefWidth="80"/>
+                <TableColumn fx:id="colRemarks" text="Remarks" prefWidth="150"/>
+            </columns>
+        </TableView>
+    </VBox>
+</VBox>

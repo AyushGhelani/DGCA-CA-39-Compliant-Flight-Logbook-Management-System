@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.dgca.flightlogbook.ui.controller.StudentController"
+      prefWidth="1050" prefHeight="720" spacing="10">
+
+    <!-- Top Navigation Bar -->
+    <HBox alignment="CENTER_LEFT" spacing="15" styleClass="top-bar">
+        <Label text="DGCA Flight Logbook" styleClass="top-bar-title"/>
+        <Label text="Student Portal" style="-fx-text-fill: #90cdf4; -fx-font-weight: bold;"/>
+        <Region HBox.hgrow="ALWAYS"/>
+        <Label fx:id="userNameLabel" text="Pilot" styleClass="top-bar-user"/>
+        <Button text="Logout" styleClass="btn-logout" onAction="#handleLogout"/>
+    </HBox>
+
+    <!-- Main Content Area -->
+    <TabPane fx:id="tabPane" VBox.vgrow="ALWAYS" tabClosingPolicy="UNAVAILABLE">
+
+        <!-- TAB 1: My Logs -->
+        <Tab text="My Logs">
+            <VBox spacing="10">
+                <padding>
+                    <Insets top="15" right="15" bottom="15" left="15"/>
+                </padding>
+
+                <!-- Filter Controls -->
+                <HBox spacing="10" alignment="CENTER_LEFT">
+                    <Label text="Status Filter:" style="-fx-font-weight: bold;"/>
+                    <ComboBox fx:id="statusFilterComboBox" prefWidth="140"/>
+                    <Button text="Refresh" onAction="#loadLogs" styleClass="btn-secondary"/>
+                    <Region HBox.hgrow="ALWAYS"/>
+                    <Button fx:id="editLogButton" text="Edit Selected Log" onAction="#handleEditSelectedLog"
+                            styleClass="btn-success" disable="true"/>
+                </HBox>
+
+                <!-- Logs Table -->
+                <TableView fx:id="logsTable" VBox.vgrow="ALWAYS">
+                    <columns>
+                        <TableColumn fx:id="colDate" text="Date" prefWidth="95"/>
+                        <TableColumn fx:id="colRoute" text="Route" prefWidth="120"/>
+                        <TableColumn fx:id="colAircraft" text="Aircraft" prefWidth="130"/>
+                        <TableColumn fx:id="colInstructor" text="Instructor" prefWidth="130"/>
+                        <TableColumn fx:id="colTotalTime" text="Total (min)" prefWidth="85"/>
+                        <TableColumn fx:id="colPicTime" text="PIC" prefWidth="60"/>
+                        <TableColumn fx:id="colDualTime" text="Dual" prefWidth="60"/>
+                        <TableColumn fx:id="colDayTime" text="Day" prefWidth="60"/>
+                        <TableColumn fx:id="colNightTime" text="Night" prefWidth="60"/>
+                        <TableColumn fx:id="colStatus" text="Status" prefWidth="90"/>
+                        <TableColumn fx:id="colRemarks" text="Remarks" prefWidth="160"/>
+                    </columns>
+                </TableView>
+            </VBox>
+        </Tab>
+
+        <!-- TAB 2: Add / Edit Log -->
+        <Tab fx:id="addEditTab" text="Add / Edit Log">
+            <ScrollPane fitToWidth="true">
+                <VBox spacing="15" styleClass="card-pane">
+                    <padding>
+                        <Insets top="20" right="25" bottom="20" left="25"/>
+                    </padding>
+
+                    <HBox alignment="CENTER_LEFT" spacing="10">
+                        <Label fx:id="formTitleLabel" text="Add New Flight Log" styleClass="header-title"/>
+                        <Region HBox.hgrow="ALWAYS"/>
+                        <Button fx:id="cancelEditButton" text="Cancel Edit / New Log" onAction="#handleResetForm"
+                                styleClass="btn-secondary" visible="false" managed="false"/>
+                    </HBox>
+
+                    <Separator/>
+
+                    <GridPane hgap="15" vgap="12">
+                        <columnConstraints>
+                            <ColumnConstraints minWidth="150" prefWidth="180"/>
+                            <ColumnConstraints minWidth="200" prefWidth="250"/>
+                            <ColumnConstraints minWidth="150" prefWidth="180"/>
+                            <ColumnConstraints minWidth="200" prefWidth="250"/>
+                        </columnConstraints>
+
+                        <!-- Row 0: Date and Aircraft -->
+                        <Label text="Flight Date (UTC):" GridPane.rowIndex="0" GridPane.columnIndex="0" style="-fx-font-weight: bold;"/>
+                        <DatePicker fx:id="datePicker" GridPane.rowIndex="0" GridPane.columnIndex="1" maxWidth="Infinity"/>
+
+                        <Label text="Aircraft:" GridPane.rowIndex="0" GridPane.columnIndex="2" style="-fx-font-weight: bold;"/>
+                        <ComboBox fx:id="aircraftComboBox" promptText="Select Aircraft" GridPane.rowIndex="0" GridPane.columnIndex="3" maxWidth="Infinity"/>
+
+                        <!-- Row 1: Departure and Arrival ICAO -->
+                        <Label text="Departure Aerodrome (ICAO):" GridPane.rowIndex="1" GridPane.columnIndex="0" style="-fx-font-weight: bold;"/>
+                        <TextField fx:id="depAerodromeField" promptText="e.g. VIDP" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+
+                        <Label text="Arrival Aerodrome (ICAO):" GridPane.rowIndex="1" GridPane.columnIndex="2" style="-fx-font-weight: bold;"/>
+                        <TextField fx:id="arrAerodromeField" promptText="e.g. VABB" GridPane.rowIndex="1" GridPane.columnIndex="3"/>
+
+                        <!-- Row 2: Block Off and Block On (HH:mm) -->
+                        <Label text="Block Off UTC (HH:mm):" GridPane.rowIndex="2" GridPane.columnIndex="0" style="-fx-font-weight: bold;"/>
+                        <TextField fx:id="blockOffField" promptText="08:30" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+
+                        <Label text="Block On UTC (HH:mm):" GridPane.rowIndex="2" GridPane.columnIndex="2" style="-fx-font-weight: bold;"/>
+                        <TextField fx:id="blockOnField" promptText="10:00" GridPane.rowIndex="2" GridPane.columnIndex="3"/>
+
+                        <!-- Row 3: Instructor & Total Block Time Display -->
+                        <Label text="Instructor (CFI):" GridPane.rowIndex="3" GridPane.columnIndex="0" style="-fx-font-weight: bold;"/>
+                        <ComboBox fx:id="instructorComboBox" promptText="Select Instructor (CFI)" GridPane.rowIndex="3" GridPane.columnIndex="1" maxWidth="Infinity"/>
+
+                        <Label text="Calculated Block Time:" GridPane.rowIndex="3" GridPane.columnIndex="2" style="-fx-font-weight: bold;"/>
+                        <Label fx:id="calcTotalTimeLabel" text="0 min" style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #2b6cb0;"
+                               GridPane.rowIndex="3" GridPane.columnIndex="3"/>
+                    </GridPane>
+
+                    <Label text="Time Breakdown (Minutes)" styleClass="sub-header"/>
+                    <Label text="Rules: PIC + SIC + Dual == Total | Day + Night == Total | Instrument &lt;= Total" style="-fx-text-fill: #718096; -fx-font-style: italic;"/>
+
+                    <GridPane hgap="15" vgap="12">
+                        <columnConstraints>
+                            <ColumnConstraints minWidth="120" prefWidth="140"/>
+                            <ColumnConstraints minWidth="120" prefWidth="160"/>
+                            <ColumnConstraints minWidth="120" prefWidth="140"/>
+                            <ColumnConstraints minWidth="120" prefWidth="160"/>
+                            <ColumnConstraints minWidth="120" prefWidth="140"/>
+                            <ColumnConstraints minWidth="120" prefWidth="160"/>
+                        </columnConstraints>
+
+                        <Label text="PIC Time (min):" GridPane.rowIndex="0" GridPane.columnIndex="0" style="-fx-font-weight: bold;"/>
+                        <TextField fx:id="picTimeField" text="0" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+
+                        <Label text="SIC Time (min):" GridPane.rowIndex="0" GridPane.columnIndex="2" style="-fx-font-weight: bold;"/>
+                        <TextField fx:id="sicTimeField" text="0" GridPane.rowIndex="0" GridPane.columnIndex="3"/>
+
+                        <Label text="Dual Time (min):" GridPane.rowIndex="0" GridPane.columnIndex="4" style="-fx-font-weight: bold;"/>
+                        <TextField fx:id="dualTimeField" text="0" GridPane.rowIndex="0" GridPane.columnIndex="5"/>
+
+                        <Label text="Day Time (min):" GridPane.rowIndex="1" GridPane.columnIndex="0" style="-fx-font-weight: bold;"/>
+                        <TextField fx:id="dayTimeField" text="0" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+
+                        <Label text="Night Time (min):" GridPane.rowIndex="1" GridPane.columnIndex="2" style="-fx-font-weight: bold;"/>
+                        <TextField fx:id="nightTimeField" text="0" GridPane.rowIndex="1" GridPane.columnIndex="3"/>
+
+                        <Label text="Instrument (min):" GridPane.rowIndex="1" GridPane.columnIndex="4" style="-fx-font-weight: bold;"/>
+                        <TextField fx:id="instrumentTimeField" text="0" GridPane.rowIndex="1" GridPane.columnIndex="5"/>
+                    </GridPane>
+
+                    <VBox spacing="5">
+                        <Label text="Remarks:" style="-fx-font-weight: bold;"/>
+                        <TextField fx:id="remarksField" promptText="Cross-country navigation, circuit practice, etc."/>
+                    </VBox>
+
+                    <!-- Form Status / Error Label -->
+                    <Label fx:id="formErrorLabel" styleClass="error-label" wrapText="true" visible="false"/>
+
+                    <HBox spacing="15" alignment="CENTER_LEFT">
+                        <Button fx:id="saveLogButton" text="Submit Flight Log" onAction="#handleSubmitLog"
+                                styleClass="btn-success" style="-fx-font-size: 14px; -fx-padding: 8 24 8 24;"/>
+                        <Button text="Clear Form" onAction="#handleResetForm" styleClass="btn-secondary"/>
+                    </HBox>
+                </VBox>
+            </ScrollPane>
+        </Tab>
+
+        <!-- TAB 3: CA-39 Report -->
+        <Tab text="CA-39 Report">
+            <VBox spacing="15">
+                <padding>
+                    <Insets top="15" right="15" bottom="15" left="15"/>
+                </padding>
+
+                <HBox spacing="15" alignment="CENTER_LEFT">
+                    <Label text="DGCA CA-39 Flying Experience Report" styleClass="header-title"/>
+                </HBox>
+
+                <!-- Student & Grand Totals Panel -->
+                <GridPane hgap="20" vgap="10" styleClass="card-pane">
+                    <columnConstraints>
+                        <ColumnConstraints prefWidth="200"/>
+                        <ColumnConstraints prefWidth="200"/>
+                        <ColumnConstraints prefWidth="200"/>
+                        <ColumnConstraints prefWidth="200"/>
+                    </columnConstraints>
+
+                    <Label text="Pilot Name:" style="-fx-font-weight: bold;" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+                    <Label fx:id="reportStudentName" text="-" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+
+                    <Label text="License Number:" style="-fx-font-weight: bold;" GridPane.rowIndex="0" GridPane.columnIndex="2"/>
+                    <Label fx:id="reportLicenseNo" text="-" GridPane.rowIndex="0" GridPane.columnIndex="3"/>
+
+                    <Label text="Total Flight Time:" style="-fx-font-weight: bold;" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+                    <Label fx:id="reportTotalTime" text="0 min (0.0 hrs)" style="-fx-text-fill: #2b6cb0; -fx-font-weight: bold;"
+                           GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+
+                    <Label text="PIC / Dual Time:" style="-fx-font-weight: bold;" GridPane.rowIndex="1" GridPane.columnIndex="2"/>
+                    <Label fx:id="reportPicDualTime" text="0 / 0 min" GridPane.rowIndex="1" GridPane.columnIndex="3"/>
+
+                    <Label text="Day / Night Time:" style="-fx-font-weight: bold;" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+                    <Label fx:id="reportDayNightTime" text="0 / 0 min" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+
+                    <Label text="Instrument Time:" style="-fx-font-weight: bold;" GridPane.rowIndex="2" GridPane.columnIndex="2"/>
+                    <Label fx:id="reportInstrumentTime" text="0 min" GridPane.rowIndex="2" GridPane.columnIndex="3"/>
+                </GridPane>
+
+                <Label text="Breakdown by Aircraft Type &amp; Engine Type" styleClass="sub-header"/>
+
+                <!-- CA-39 Breakdown Table -->
+                <TableView fx:id="ca39Table" VBox.vgrow="ALWAYS">
+                    <columns>
+                        <TableColumn fx:id="colRepAircraftType" text="Aircraft Type" prefWidth="130"/>
+                        <TableColumn fx:id="colRepEngineType" text="Engine Type" prefWidth="130"/>
+                        <TableColumn fx:id="colRepTotalMin" text="Total (min)" prefWidth="95"/>
+                        <TableColumn fx:id="colRepPic" text="PIC" prefWidth="75"/>
+                        <TableColumn fx:id="colRepSic" text="SIC" prefWidth="75"/>
+                        <TableColumn fx:id="colRepDual" text="Dual" prefWidth="75"/>
+                        <TableColumn fx:id="colRepDay" text="Day" prefWidth="75"/>
+                        <TableColumn fx:id="colRepNight" text="Night" prefWidth="75"/>
+                        <TableColumn fx:id="colRepInstrument" text="Instrument" prefWidth="95"/>
+                        <TableColumn fx:id="colRepFlights" text="No. of Flights" prefWidth="100"/>
+                    </columns>
+                </TableView>
+            </VBox>
+        </Tab>
+    </TabPane>
+</VBox>
